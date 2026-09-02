@@ -26,7 +26,7 @@ const STABLE_ASSETS = new Set(["USDT","USDC","FDUSD","TUSD","DAI","USDE","USDS",
 const DEFAULT_ASSETS = ["BTC","ETH","SOL","LINK","AVAX"];
 const DEFAULT_WEIGHTS = {trend:30,momentum:20,strength:15,volume:15,volatility:10,structure:10};
 const QRA_LAB_VERSION = "QRA-OOS-1";
-const APP_VERSION = "6.11.7-C1.0-HUMAN";
+const APP_VERSION = "6.11.7-C1.1-HUMAN";
 // QRA-09 · gestión dinámica de salida, sólo laboratorio.
 // Frontera fija: NO convierte operaciones previas en evidencia prospectiva.
 const QRA09_VERSION = "QRA-09-V1-2026-08-30";
@@ -1876,12 +1876,12 @@ function renderHumanInterventionPanel(){
   const dur=t=>{const ms=Math.max(0,Date.now()-Number(t.openedAt||Date.now()));const h=ms/36e5;return h<1?`${Math.round(ms/60000)}m`:`${fmt(h,1)}h`};
   const rows=open.map(t=>{
     const px=Number(t.current||t.entry),r=signedRFromPrice(t,px);
-    return `<tr><td><strong>${esc(t.symbol)}/USDT</strong></td><td>${esc(t.interval||"—")}</td><td>${esc(String(t.side||"").toUpperCase())}</td><td>${money(t.entry)}</td><td>${money(px)}</td><td class="${r>=0?"status-win":"status-loss"}"><strong>${r>=0?"+":""}${fmt(r,2)}R</strong></td><td>+${fmt(Number(t.mfeR||0),2)}R</td><td>-${fmt(Number(t.maeR||0),2)}R</td><td>${dur(t)}</td><td><button class="human-c-close" data-close-paper="${t.id}">Cerrar ahora</button></td></tr>`;
+    return `<tr><td><strong>${esc(t.symbol)}/USDT</strong></td><td>${esc(t.interval||"—")}</td><td>${esc(String(t.side||"").toUpperCase())}</td><td>${money(t.entry)}</td><td>${money(t.stop)}</td><td>${money(t.target)}</td><td>${money(px)}</td><td class="${r>=0?"status-win":"status-loss"}"><strong>${r>=0?"+":""}${fmt(r,2)}R</strong></td><td>+${fmt(Number(t.mfeR||0),2)}R</td><td>-${fmt(Number(t.maeR||0),2)}R</td><td>${dur(t)}</td><td><button class="human-c-close" data-close-paper="${t.id}">Cerrar ahora</button></td></tr>`;
   }).join("");
   const recent=manual.slice(0,8).map(t=>{const cf=cfByParent.get(String(t.id));const hr=Number(t.manualIntervention?.exitR||signedRFromPrice(t,t.exit));let cmp="Pendiente";if(cf&&cf.status!=="open"&&cf.exit!=null){const ar=signedRFromPrice(cf,cf.exit),d=hr-ar;cmp=`Auto ${ar>=0?"+":""}${fmt(ar,2)}R · Δ humano ${d>=0?"+":""}${fmt(d,2)}R`}return `<tr><td>${esc(t.symbol)}/USDT</td><td>${esc(t.interval||"—")}</td><td>${hr>=0?"+":""}${fmt(hr,2)}R</td><td>+${fmt(Number(t.manualIntervention?.observedMfeR||0),2)}R</td><td>${cmp}</td></tr>`}).join("");
   box.innerHTML=`<div class="human-c-summary"><div class="human-c-stat"><span>Abiertas para observar</span><strong>${open.length}</strong></div><div class="human-c-stat"><span>Intervenciones</span><strong>${manual.length}</strong></div><div class="human-c-stat"><span>Humano ayudó / perjudicó</span><strong>${helped} / ${hurt}</strong></div><div class="human-c-stat"><span>Δ promedio humano</span><strong>${deltas.length?(avgDelta>=0?"+":"")+fmt(avgDelta,2)+"R":"—"}</strong></div></div>
   <p class="human-c-help">El R mostrado usa el último precio que C tiene registrado. Al pulsar <strong>Cerrar ahora</strong>, intenta obtener el ticker de Binance y guarda ese precio como intervención. La sombra automática continúa aparte para el contrafactual.</p>
-  <div class="human-c-table-wrap"><table class="human-c-table"><thead><tr><th>Par</th><th>TF</th><th>Dir.</th><th>Entrada</th><th>Actual</th><th>R actual</th><th>MFE</th><th>MAE</th><th>Duración</th><th>Intervenir</th></tr></thead><tbody>${rows||'<tr><td colspan="10">No hay posiciones abiertas.</td></tr>'}</tbody></table></div>
+  <div class="human-c-table-wrap"><table class="human-c-table"><thead><tr><th>Par</th><th>TF</th><th>Dir.</th><th>Entrada</th><th>Stop</th><th>Objetivo</th><th>Actual</th><th>R actual</th><th>MFE</th><th>MAE</th><th>Duración</th><th>Intervenir</th></tr></thead><tbody>${rows||'<tr><td colspan="12">No hay posiciones abiertas.</td></tr>'}</tbody></table></div>
   ${manual.length?`<div class="human-c-table-wrap"><table class="human-c-table"><thead><tr><th>Intervención reciente</th><th>TF</th><th>Cierre humano</th><th>MFE al cerrar</th><th>Contrafactual automático</th></tr></thead><tbody>${recent}</tbody></table></div>`:""}`;
   $$('[data-close-paper]').forEach(b=>b.onclick=()=>closePaperManual(b.dataset.closePaper));
 }

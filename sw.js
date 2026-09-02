@@ -1,9 +1,9 @@
-const CACHE_NAME="centro-quant-v6-11-7-c1-0-human";
+const CACHE_NAME="centro-quant-v6-11-7-c1-1-human";
 const CORE=[
   "./",
   "./index.html",
-  "./styles.css?v=6.11.7-C1.0-HUMAN",
-  "./app.js?v=6.11.7-C1.0-HUMAN",
+  "./styles.css?v=6.11.7-C1.1-HUMAN",
+  "./app.js?v=6.11.7-C1.1-HUMAN",
   "./manifest.webmanifest"
 ];
 

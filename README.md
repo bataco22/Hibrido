@@ -23,3 +23,8 @@ Comparar una ejecución automática (Quant B) contra una candidata semiautomáti
 Los cierres humanos quedan identificados por `status: "manual"` y `manualIntervention.version: "C-HUMAN-INTERVENTION-V1"`. Sus contrafactuales viven en el ledger de sombras con `cHumanCounterfactual: true`, por lo que no deben mezclarse con el ledger operativo principal.
 
 Para una comparación limpia B vs C, ejecutar ambos prospectivamente y no modificar reglas adicionales durante la muestra.
+
+
+## v6.11.7-C1.1-HUMAN
+- Panel de intervención humana: añade columnas Stop y Objetivo usando los niveles originales guardados en cada operación.
+- No cambia reglas de entrada, salida, R, MFE/MAE ni el namespace de datos; es un cambio visual de auditoría.
